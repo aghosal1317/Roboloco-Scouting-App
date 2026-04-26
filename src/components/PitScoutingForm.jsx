@@ -111,7 +111,7 @@ export default function PitScoutingForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ formType: 'pit', ...form }),
       })
-      showToast('Pit scout submitted!')
+      showToast('Pit data saved to sheet.')
       setForm(defaultForm)
     } catch {
       showToast('Submission failed. Check connection.', 'error')

@@ -270,7 +270,7 @@ export default function ScoutingForm() {
           immobilized: form.immobilized ?? 'No',
         }),
       })
-      showToast('Scout submitted!')
+      showToast('Match data saved to sheet.')
       const name = form.scouterName
       setForm({ ...defaultForm, scouterName: name })
     } catch {
