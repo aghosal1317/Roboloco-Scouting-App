@@ -18,10 +18,9 @@ function Card({ children }) {
   )
 }
 
-function SectionHeading({ icon, children }) {
+function SectionHeading({ children }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-      {icon && <span style={{ fontSize: 18 }}>{icon}</span>}
       <span style={{ color: YELLOW, fontWeight: 800, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
         {children}
       </span>
@@ -127,7 +126,7 @@ export default function PitScoutingForm() {
 
         {/* Robot Info */}
         <Card>
-          <SectionHeading icon="🤖">Robot Info</SectionHeading>
+          <SectionHeading>Robot Info</SectionHeading>
 
           <Field label="Team Number">
             <Input type="number" placeholder="e.g. 5338" value={form.teamNumber} onChange={set('teamNumber')} />
@@ -161,7 +160,7 @@ export default function PitScoutingForm() {
 
         {/* Mechanism Info */}
         <Card>
-          <SectionHeading icon="⚙️">Mechanisms</SectionHeading>
+          <SectionHeading>Mechanisms</SectionHeading>
 
           <Field label="Shooter">
             <Select value={form.shooter} onChange={set('shooter')}>
@@ -197,7 +196,7 @@ export default function PitScoutingForm() {
 
         {/* Field Clearances */}
         <Card>
-          <SectionHeading icon="📐">Field Clearances</SectionHeading>
+          <SectionHeading>Field Clearances</SectionHeading>
 
           <Field label="Can they go over the bump?">
             <Select value={form.overBump} onChange={set('overBump')}>

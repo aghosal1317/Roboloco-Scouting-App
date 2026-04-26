@@ -6,8 +6,8 @@ import PitScoutingForm from './components/PitScoutingForm'
 const TEAL = '#61dde1'
 
 const NAV = [
-  { id: 'match', label: 'Match Scouting', icon: '🏟️' },
-  { id: 'pit',   label: 'Pit Scouting',   icon: '🔧' },
+  { id: 'match', label: 'Match Scouting' },
+  { id: 'pit',   label: 'Pit Scouting' },
 ]
 
 export default function App() {
@@ -127,7 +127,6 @@ export default function App() {
                 marginBottom: 4,
               }}
             >
-              <span style={{ fontSize: 18 }}>{icon}</span>
               {label}
             </button>
           )

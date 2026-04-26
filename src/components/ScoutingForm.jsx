@@ -21,10 +21,9 @@ function Card({ children }) {
   )
 }
 
-function SectionHeading({ icon, children }) {
+function SectionHeading({ children }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-      {icon && <span style={{ fontSize: 18 }}>{icon}</span>}
       <span style={{ color: YELLOW, fontWeight: 800, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
         {children}
       </span>
@@ -287,7 +286,7 @@ export default function ScoutingForm() {
 
         {/* Match Info */}
         <Card>
-          <SectionHeading icon="📋">Match Info</SectionHeading>
+          <SectionHeading>Match Info</SectionHeading>
           <Field label="Scouter Name">
             <Input placeholder="Your name..." value={form.scouterName} onChange={set('scouterName')} />
           </Field>
@@ -309,7 +308,7 @@ export default function ScoutingForm() {
 
         {/* Auto */}
         <Card>
-          <SectionHeading icon="🤖">Auto</SectionHeading>
+          <SectionHeading>Auto</SectionHeading>
           <Field label="Auto Path">
             <Textarea placeholder="Describe their auto path..." value={form.autoPath} onChange={set('autoPath')} />
           </Field>
@@ -320,7 +319,7 @@ export default function ScoutingForm() {
 
         {/* Tele-Op */}
         <Card>
-          <SectionHeading icon="🕹️">Tele-Op</SectionHeading>
+          <SectionHeading>Tele-Op</SectionHeading>
           <Field label="Active Notes" hint="when engaged">
             <Textarea placeholder="What did they do when actively engaged?" value={form.teleOpActive} onChange={set('teleOpActive')} />
           </Field>
@@ -343,7 +342,7 @@ export default function ScoutingForm() {
 
         {/* Endgame */}
         <Card>
-          <SectionHeading icon="🏁">Endgame</SectionHeading>
+          <SectionHeading>Endgame</SectionHeading>
           <Field label="Endgame Notes">
             <Textarea placeholder="Describe endgame behavior..." value={form.endgameNotes} onChange={set('endgameNotes')} />
           </Field>
@@ -354,7 +353,7 @@ export default function ScoutingForm() {
 
         {/* Defense & Incidents */}
         <Card>
-          <SectionHeading icon="🛡️">Defense &amp; Incidents</SectionHeading>
+          <SectionHeading>Defense &amp; Incidents</SectionHeading>
 
           <Field label="Defended?">
             <Toggle options={['Yes', 'No']} value={form.defended} onChange={setVal('defended')} />
@@ -390,7 +389,7 @@ export default function ScoutingForm() {
 
         {/* Other Notes */}
         <Card>
-          <SectionHeading icon="📝">Other Notes</SectionHeading>
+          <SectionHeading>Other Notes</SectionHeading>
           <div style={{ marginBottom: 12 }}>
             <Textarea placeholder="Any other observations..." value={form.otherNotes} onChange={set('otherNotes')} rows={3} />
           </div>
