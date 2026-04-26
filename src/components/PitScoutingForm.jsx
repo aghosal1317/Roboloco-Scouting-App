@@ -138,8 +138,8 @@ const defaultForm = {
   shooterStyle: '',
   shootMode: '',
   shootingPositions: '',
-  climb: '',
-  climbTiming: '',
+  climb: [],
+  climbTiming: [],
   hasAuto: '',
   autoPaths: '',
   autoAlign: '',
@@ -176,6 +176,8 @@ export default function PitScoutingForm() {
             : form.swerveMotors.join(', '),
           traversal: form.traversal.join(', '),
           collection: form.collection.join(', '),
+          climb: form.climb.join(', '),
+          climbTiming: form.climbTiming.join(', '),
           intakeType: form.intakeType === 'Other' ? form.intakeOther : form.intakeType,
           autoAlign: form.autoAlign === 'Other' ? form.autoAlignOther : form.autoAlign,
         }),
@@ -319,16 +321,16 @@ export default function PitScoutingForm() {
         <Card>
           <SectionHeading>Endgame</SectionHeading>
 
-          <Field label="Climb Level">
-            <Toggle
+          <Field label="Climb Level" hint="select all that apply">
+            <MultiToggle
               options={['L1', 'L2', 'L3', 'No / Not Functional']}
               value={form.climb}
               onChange={setVal('climb')}
             />
           </Field>
 
-          <Field label="When Can They Climb?">
-            <Toggle
+          <Field label="When Can They Climb?" hint="select all that apply">
+            <MultiToggle
               options={['Auto', 'Endgame', 'Cannot Climb']}
               value={form.climbTiming}
               onChange={setVal('climbTiming')}
