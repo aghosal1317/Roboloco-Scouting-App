@@ -1,69 +1,73 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import Toast from './Toast'
 
 const SHEET_URL = import.meta.env.VITE_SHEET_URL
-
 const YELLOW = '#fee801'
 const TEAL = '#61dde1'
 
-const inputStyle = {
-  backgroundColor: '#111',
-  border: `1.5px solid ${YELLOW}`,
-  color: '#fff',
-  width: '100%',
-  borderRadius: '6px',
-  padding: '10px 12px',
-  fontSize: '15px',
-  outline: 'none',
-  resize: 'vertical',
-}
+/* ── primitives ── */
 
-const labelStyle = {
-  color: YELLOW,
-  fontWeight: '600',
-  fontSize: '14px',
-  display: 'block',
-  marginBottom: '5px',
-}
-
-function SectionHeading({ children }) {
+function Card({ children }) {
   return (
-    <h2
-      className="text-lg font-bold mt-2 mb-4 pb-1"
-      style={{
-        color: YELLOW,
-        borderBottom: `2px solid ${YELLOW}`,
-        textDecoration: 'underline',
-        textUnderlineOffset: '4px',
-      }}
-    >
-      {children}
-    </h2>
-  )
-}
-
-function Field({ label, children }) {
-  return (
-    <div className="flex flex-col gap-1 mb-4">
-      <label style={labelStyle}>{label}</label>
+    <div style={{
+      backgroundColor: '#111',
+      border: '1.5px solid #2a2a2a',
+      borderRadius: 16,
+      padding: '20px 20px 8px',
+      marginBottom: 16,
+    }}>
       {children}
     </div>
   )
 }
 
-function TextArea({ placeholder, value, onChange, rows = 3 }) {
+function SectionHeading({ icon, children }) {
   return (
-    <textarea
-      rows={rows}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      style={inputStyle}
-    />
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+      {icon && <span style={{ fontSize: 18 }}>{icon}</span>}
+      <span style={{ color: YELLOW, fontWeight: 800, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+        {children}
+      </span>
+      <div style={{ flex: 1, height: 1, backgroundColor: '#2a2a2a' }} />
+    </div>
   )
 }
 
-function TextInput({ placeholder, value, onChange, type = 'text' }) {
+function Label({ children, hint }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 6 }}>
+      <span style={{ color: YELLOW, fontWeight: 700, fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+        {children}
+      </span>
+      {hint && <span style={{ color: '#555', fontSize: 11 }}>{hint}</span>}
+    </div>
+  )
+}
+
+function Field({ label, hint, children }) {
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <Label hint={hint}>{label}</Label>
+      {children}
+    </div>
+  )
+}
+
+const inputStyle = {
+  width: '100%',
+  backgroundColor: '#1a1a1a',
+  border: '1.5px solid #2e2e2e',
+  borderRadius: 10,
+  padding: '10px 14px',
+  color: '#fff',
+  fontSize: 14,
+  outline: 'none',
+  fontFamily: 'inherit',
+  boxSizing: 'border-box',
+  transition: 'border-color 0.15s',
+}
+
+function Input({ type = 'text', placeholder, value, onChange }) {
   return (
     <input
       type={type}
@@ -71,26 +75,61 @@ function TextInput({ placeholder, value, onChange, type = 'text' }) {
       value={value}
       onChange={onChange}
       style={inputStyle}
+      onFocus={e => (e.target.style.borderColor = YELLOW)}
+      onBlur={e => (e.target.style.borderColor = '#2e2e2e')}
     />
   )
 }
 
-function ToggleGroup({ options, value, onChange }) {
+function Textarea({ placeholder, value, onChange, rows = 3 }) {
   return (
-    <div className="flex gap-2 flex-wrap">
-      {options.map((opt) => {
-        const selected = value === opt
+    <textarea
+      rows={rows}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      style={{ ...inputStyle, resize: 'vertical' }}
+      onFocus={e => (e.target.style.borderColor = YELLOW)}
+      onBlur={e => (e.target.style.borderColor = '#2e2e2e')}
+    />
+  )
+}
+
+function Select({ value, onChange, children }) {
+  return (
+    <select
+      value={value}
+      onChange={onChange}
+      style={{ ...inputStyle, cursor: 'pointer' }}
+      onFocus={e => (e.target.style.borderColor = YELLOW)}
+      onBlur={e => (e.target.style.borderColor = '#2e2e2e')}
+    >
+      {children}
+    </select>
+  )
+}
+
+function Toggle({ options, value, onChange }) {
+  return (
+    <div style={{ display: 'flex', gap: 8 }}>
+      {options.map(opt => {
+        const on = value === opt
         return (
           <button
             key={opt}
             type="button"
             onClick={() => onChange(opt)}
-            className="px-5 py-2 rounded-full font-semibold text-sm transition-all"
-            style={
-              selected
-                ? { backgroundColor: TEAL, color: '#000', border: `2px solid ${TEAL}` }
-                : { backgroundColor: '#000', color: YELLOW, border: `2px solid ${YELLOW}` }
-            }
+            style={{
+              padding: '8px 24px',
+              borderRadius: 999,
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: 'pointer',
+              border: `1.5px solid ${on ? TEAL : '#333'}`,
+              backgroundColor: on ? TEAL : '#1a1a1a',
+              color: on ? '#000' : '#aaa',
+              transition: 'all 0.15s',
+            }}
           >
             {opt}
           </button>
@@ -100,27 +139,81 @@ function ToggleGroup({ options, value, onChange }) {
   )
 }
 
-function RatingSlider({ value, onChange }) {
+function Slider({ value, onChange }) {
+  const pct = ((value - 1) / 9) * 100
   return (
-    <div className="flex items-center gap-4">
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
       <input
         type="range"
         min={1}
         max={10}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="flex-1"
-        style={{ accentColor: TEAL }}
+        onChange={e => onChange(Number(e.target.value))}
+        style={{
+          flex: 1,
+          background: `linear-gradient(to right, ${TEAL} ${pct}%, #2a2a2a ${pct}%)`,
+        }}
       />
-      <span
-        className="text-xl font-bold w-8 text-center"
-        style={{ color: TEAL }}
-      >
+      <div style={{
+        width: 42,
+        height: 42,
+        borderRadius: 10,
+        border: `1.5px solid ${TEAL}`,
+        backgroundColor: '#1a1a1a',
+        color: TEAL,
+        fontWeight: 900,
+        fontSize: 18,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}>
         {value}
-      </span>
+      </div>
     </div>
   )
 }
+
+function ClimbButtons({ value, onChange }) {
+  const levels = [
+    { val: 0, label: '0', sub: 'None' },
+    { val: 1, label: '1', sub: 'Low' },
+    { val: 2, label: '2', sub: 'Mid' },
+    { val: 3, label: '3', sub: 'High' },
+  ]
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+      {levels.map(({ val, label, sub }) => {
+        const on = value === val
+        return (
+          <button
+            key={val}
+            type="button"
+            onClick={() => onChange(val)}
+            style={{
+              padding: '12px 0 8px',
+              borderRadius: 12,
+              cursor: 'pointer',
+              border: `1.5px solid ${on ? TEAL : '#2e2e2e'}`,
+              backgroundColor: on ? TEAL : '#1a1a1a',
+              color: on ? '#000' : '#666',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 2,
+              transition: 'all 0.15s',
+            }}
+          >
+            <span style={{ fontWeight: 900, fontSize: 20 }}>{label}</span>
+            <span style={{ fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{sub}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+/* ── form state ── */
 
 const defaultForm = {
   scouterName: '',
@@ -152,25 +245,17 @@ export default function ScoutingForm() {
   const [submitting, setSubmitting] = useState(false)
   const [toast, setToast] = useState(null)
 
-  const set = (key) => (e) =>
-    setForm((f) => ({ ...f, [key]: e?.target ? e.target.value : e }))
-
-  const setDirect = (key) => (val) =>
-    setForm((f) => ({ ...f, [key]: val }))
+  const set = key => e => setForm(f => ({ ...f, [key]: e?.target ? e.target.value : e }))
+  const setVal = key => val => setForm(f => ({ ...f, [key]: val }))
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type })
     setTimeout(() => setToast(null), 3500)
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault()
-
-    if (!SHEET_URL) {
-      showToast('No VITE_SHEET_URL configured. Check your .env file.', 'error')
-      return
-    }
-
+    if (!SHEET_URL) { showToast('No VITE_SHEET_URL set in .env', 'error'); return }
     setSubmitting(true)
     try {
       await fetch(SHEET_URL, {
@@ -185,11 +270,11 @@ export default function ScoutingForm() {
           immobilized: form.immobilized ?? 'No',
         }),
       })
-      showToast('Scout submitted!', 'success')
-      const savedName = form.scouterName
-      setForm({ ...defaultForm, scouterName: savedName })
-    } catch (err) {
-      showToast('Submission failed. Check your connection.', 'error')
+      showToast('Scout submitted!')
+      const name = form.scouterName
+      setForm({ ...defaultForm, scouterName: name })
+    } catch {
+      showToast('Submission failed. Check connection.', 'error')
     } finally {
       setSubmitting(false)
     }
@@ -198,237 +283,136 @@ export default function ScoutingForm() {
   return (
     <>
       {toast && <Toast message={toast.message} type={toast.type} />}
+      <form onSubmit={handleSubmit}>
 
-      <form
-        onSubmit={handleSubmit}
-        className="rounded-lg p-6 mb-8"
-        style={{ border: `2px solid ${YELLOW}`, backgroundColor: '#0a0a0a' }}
-      >
         {/* Match Info */}
-        <SectionHeading>Match Info</SectionHeading>
-
-        <Field label="Scouter Name">
-          <TextInput
-            placeholder="Your name..."
-            value={form.scouterName}
-            onChange={set('scouterName')}
-          />
-        </Field>
-
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Match #">
-            <TextInput
-              type="number"
-              placeholder="e.g. 12"
-              value={form.matchNumber}
-              onChange={set('matchNumber')}
-            />
+        <Card>
+          <SectionHeading icon="📋">Match Info</SectionHeading>
+          <Field label="Scouter Name">
+            <Input placeholder="Your name..." value={form.scouterName} onChange={set('scouterName')} />
           </Field>
-          <Field label="Team #">
-            <TextInput
-              type="number"
-              placeholder="e.g. 5338"
-              value={form.teamNumber}
-              onChange={set('teamNumber')}
-            />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <Field label="Match #">
+              <Input type="number" placeholder="e.g. 12" value={form.matchNumber} onChange={set('matchNumber')} />
+            </Field>
+            <Field label="Team #">
+              <Input type="number" placeholder="e.g. 5338" value={form.teamNumber} onChange={set('teamNumber')} />
+            </Field>
+          </div>
+          <Field label="Alliance">
+            <Select value={form.alliance} onChange={set('alliance')}>
+              <option value="Red">🔴  Red Alliance</option>
+              <option value="Blue">🔵  Blue Alliance</option>
+            </Select>
           </Field>
-        </div>
-
-        <Field label="Alliance">
-          <select
-            value={form.alliance}
-            onChange={set('alliance')}
-            style={inputStyle}
-          >
-            <option value="Red">Red</option>
-            <option value="Blue">Blue</option>
-          </select>
-        </Field>
+        </Card>
 
         {/* Auto */}
-        <SectionHeading>Auto</SectionHeading>
-
-        <Field label="Auto Path">
-          <TextArea
-            placeholder="Describe their auto path..."
-            value={form.autoPath}
-            onChange={set('autoPath')}
-          />
-        </Field>
-
-        <Field label="Transition Period">
-          <TextArea
-            placeholder="What did they do during transition?"
-            value={form.transitionPeriod}
-            onChange={set('transitionPeriod')}
-          />
-        </Field>
+        <Card>
+          <SectionHeading icon="🤖">Auto</SectionHeading>
+          <Field label="Auto Path">
+            <Textarea placeholder="Describe their auto path..." value={form.autoPath} onChange={set('autoPath')} />
+          </Field>
+          <Field label="Transition Period">
+            <Textarea placeholder="What did they do during transition?" value={form.transitionPeriod} onChange={set('transitionPeriod')} />
+          </Field>
+        </Card>
 
         {/* Tele-Op */}
-        <SectionHeading>Tele-Op</SectionHeading>
-
-        <Field label="Tele-Op ACTIVE Notes">
-          <TextArea
-            placeholder="What did they do when actively engaged?"
-            value={form.teleOpActive}
-            onChange={set('teleOpActive')}
-          />
-        </Field>
-
-        <Field label="Tele-Op INACTIVE Notes">
-          <TextArea
-            placeholder="What did they do when not engaged?"
-            value={form.teleOpInactive}
-            onChange={set('teleOpInactive')}
-          />
-        </Field>
-
-        <Field label="Shooting Rating">
-          <RatingSlider
-            value={form.shootingRating}
-            onChange={setDirect('shootingRating')}
-          />
-          <div className="mt-2">
-            <TextArea
-              placeholder="Shooting notes..."
-              value={form.shootingNotes}
-              onChange={set('shootingNotes')}
-              rows={2}
-            />
-          </div>
-        </Field>
-
-        <Field label="Intaking Rating">
-          <RatingSlider
-            value={form.intakingRating}
-            onChange={setDirect('intakingRating')}
-          />
-          <div className="mt-2">
-            <TextArea
-              placeholder="Intaking notes..."
-              value={form.intakingNotes}
-              onChange={set('intakingNotes')}
-              rows={2}
-            />
-          </div>
-        </Field>
+        <Card>
+          <SectionHeading icon="🕹️">Tele-Op</SectionHeading>
+          <Field label="Active Notes" hint="when engaged">
+            <Textarea placeholder="What did they do when actively engaged?" value={form.teleOpActive} onChange={set('teleOpActive')} />
+          </Field>
+          <Field label="Inactive Notes" hint="when not engaged">
+            <Textarea placeholder="What did they do when not engaged?" value={form.teleOpInactive} onChange={set('teleOpInactive')} />
+          </Field>
+          <Field label="Shooting" hint="rate 1–10">
+            <Slider value={form.shootingRating} onChange={setVal('shootingRating')} />
+            <div style={{ marginTop: 8 }}>
+              <Textarea placeholder="Shooting notes..." value={form.shootingNotes} onChange={set('shootingNotes')} rows={2} />
+            </div>
+          </Field>
+          <Field label="Intaking" hint="rate 1–10">
+            <Slider value={form.intakingRating} onChange={setVal('intakingRating')} />
+            <div style={{ marginTop: 8 }}>
+              <Textarea placeholder="Intaking notes..." value={form.intakingNotes} onChange={set('intakingNotes')} rows={2} />
+            </div>
+          </Field>
+        </Card>
 
         {/* Endgame */}
-        <SectionHeading>Endgame</SectionHeading>
-
-        <Field label="Endgame Notes">
-          <TextArea
-            placeholder="Describe endgame behavior..."
-            value={form.endgameNotes}
-            onChange={set('endgameNotes')}
-          />
-        </Field>
-
-        <Field label="Climb Level">
-          <div className="flex gap-2">
-            {[0, 1, 2, 3].map((lvl) => {
-              const selected = form.climbLevel === lvl
-              return (
-                <button
-                  key={lvl}
-                  type="button"
-                  onClick={() => setForm((f) => ({ ...f, climbLevel: lvl }))}
-                  className="flex-1 py-2 rounded-full font-bold text-sm transition-all"
-                  style={
-                    selected
-                      ? { backgroundColor: TEAL, color: '#000', border: `2px solid ${TEAL}` }
-                      : { backgroundColor: '#000', color: YELLOW, border: `2px solid ${YELLOW}` }
-                  }
-                >
-                  {lvl}
-                </button>
-              )
-            })}
-          </div>
-        </Field>
+        <Card>
+          <SectionHeading icon="🏁">Endgame</SectionHeading>
+          <Field label="Endgame Notes">
+            <Textarea placeholder="Describe endgame behavior..." value={form.endgameNotes} onChange={set('endgameNotes')} />
+          </Field>
+          <Field label="Climb Level">
+            <ClimbButtons value={form.climbLevel} onChange={setVal('climbLevel')} />
+          </Field>
+        </Card>
 
         {/* Defense & Incidents */}
-        <SectionHeading>Defense &amp; Incidents</SectionHeading>
+        <Card>
+          <SectionHeading icon="🛡️">Defense &amp; Incidents</SectionHeading>
 
-        <Field label="Defended?">
-          <ToggleGroup
-            options={['Yes', 'No']}
-            value={form.defended}
-            onChange={setDirect('defended')}
-          />
-          {form.defended === 'Yes' && (
-            <div className="mt-2">
-              <TextArea
-                placeholder="Notes on how they were defended..."
-                value={form.defendedNotes}
-                onChange={set('defendedNotes')}
-                rows={2}
-              />
-            </div>
-          )}
-        </Field>
+          <Field label="Defended?">
+            <Toggle options={['Yes', 'No']} value={form.defended} onChange={setVal('defended')} />
+            {form.defended === 'Yes' && (
+              <div style={{ marginTop: 8 }}>
+                <Textarea placeholder="Notes on how they were defended..." value={form.defendedNotes} onChange={set('defendedNotes')} rows={2} />
+              </div>
+            )}
+          </Field>
 
-        <Field label="Played Defense?">
-          <ToggleGroup
-            options={['Yes', 'No']}
-            value={form.playedDefense}
-            onChange={setDirect('playedDefense')}
-          />
-          {form.playedDefense === 'Yes' && (
-            <div className="mt-2">
-              <TextArea
-                placeholder="Notes on their defense..."
-                value={form.defenseNotes}
-                onChange={set('defenseNotes')}
-                rows={2}
-              />
-            </div>
-          )}
-        </Field>
+          <Field label="Played Defense?">
+            <Toggle options={['Yes', 'No']} value={form.playedDefense} onChange={setVal('playedDefense')} />
+            {form.playedDefense === 'Yes' && (
+              <div style={{ marginTop: 8 }}>
+                <Textarea placeholder="Notes on their defense..." value={form.defenseNotes} onChange={set('defenseNotes')} rows={2} />
+              </div>
+            )}
+          </Field>
 
-        <Field label="Immobilized/Breakdown?">
-          <ToggleGroup
-            options={['Yes', 'No']}
-            value={form.immobilized}
-            onChange={setDirect('immobilized')}
-          />
-          {form.immobilized === 'Yes' && (
-            <div className="mt-2">
-              <TextArea
-                placeholder="Describe the breakdown..."
-                value={form.immobilizedNotes}
-                onChange={set('immobilizedNotes')}
-                rows={2}
-              />
-            </div>
-          )}
-        </Field>
+          <Field label="Immobilized / Breakdown?">
+            <Toggle options={['Yes', 'No']} value={form.immobilized} onChange={setVal('immobilized')} />
+            {form.immobilized === 'Yes' && (
+              <div style={{ marginTop: 8 }}>
+                <Textarea placeholder="Describe the breakdown..." value={form.immobilizedNotes} onChange={set('immobilizedNotes')} rows={2} />
+              </div>
+            )}
+          </Field>
 
-        <Field label="Penalties (optional)">
-          <TextArea
-            placeholder="Any penalties? Leave blank if none."
-            value={form.penalties}
-            onChange={set('penalties')}
-            rows={2}
-          />
-        </Field>
+          <Field label="Penalties" hint="optional">
+            <Textarea placeholder="Any penalties? Leave blank if none." value={form.penalties} onChange={set('penalties')} rows={2} />
+          </Field>
+        </Card>
 
-        <Field label="Other Notes">
-          <TextArea
-            placeholder="Any other observations..."
-            value={form.otherNotes}
-            onChange={set('otherNotes')}
-          />
-        </Field>
+        {/* Other Notes */}
+        <Card>
+          <SectionHeading icon="📝">Other Notes</SectionHeading>
+          <div style={{ marginBottom: 12 }}>
+            <Textarea placeholder="Any other observations..." value={form.otherNotes} onChange={set('otherNotes')} rows={3} />
+          </div>
+        </Card>
 
+        {/* Submit */}
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-4 rounded-lg font-bold text-black text-base transition-opacity mt-2"
           style={{
-            backgroundColor: TEAL,
-            opacity: submitting ? 0.7 : 1,
+            width: '100%',
+            padding: '16px',
+            borderRadius: 14,
+            backgroundColor: submitting ? '#3a8a8c' : TEAL,
+            color: '#000',
+            fontWeight: 900,
+            fontSize: 16,
+            letterSpacing: '0.05em',
             cursor: submitting ? 'not-allowed' : 'pointer',
+            border: 'none',
+            transition: 'all 0.15s',
+            marginTop: 4,
           }}
         >
           {submitting ? 'Submitting...' : 'Submit Scout'}

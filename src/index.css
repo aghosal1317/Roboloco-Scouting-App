@@ -9,60 +9,67 @@
 body {
   background-color: #000;
   color: #fff;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
   min-height: 100vh;
+  width: 100%;
 }
 
-/* Custom slider styling */
+/* Slider base */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   height: 6px;
-  background: #333;
   border-radius: 3px;
   outline: none;
   cursor: pointer;
+  width: 100%;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #61dde1;
   cursor: pointer;
-  border: 2px solid #000;
-  box-shadow: 0 0 4px rgba(97, 221, 225, 0.5);
+  border: 3px solid #000;
+  box-shadow: 0 0 0 1.5px #61dde1;
+  transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #61dde1;
   cursor: pointer;
-  border: 2px solid #000;
-  box-shadow: 0 0 4px rgba(97, 221, 225, 0.5);
+  border: 3px solid #000;
+  box-shadow: 0 0 0 1.5px #61dde1;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
-  height: 6px;
-  border-radius: 3px;
+/* Placeholder text */
+::placeholder {
+  color: #444;
 }
 
 /* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #fee801; }
+
+/* Select arrow color */
+select option {
   background: #111;
-}
-::-webkit-scrollbar-thumb {
-  background: #fee801;
-  border-radius: 3px;
+  color: #fff;
 }
