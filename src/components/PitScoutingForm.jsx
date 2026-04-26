@@ -126,7 +126,8 @@ const defaultForm = {
   teamNumber: '',
   weight: '',
   driveTrain: '',
-  swerveMotors: '',
+  swerveMotors: [],
+  swerveMotorsOther: '',
   hopperCapacity: '',
   traversal: [],          // Bump, Trench
   collection: [],         // Outpost, Depot
@@ -170,6 +171,9 @@ export default function PitScoutingForm() {
         body: JSON.stringify({
           formType: 'pit',
           ...form,
+          swerveMotors: form.swerveMotors.includes('Other')
+            ? [...form.swerveMotors.filter(m => m !== 'Other'), form.swerveMotorsOther].filter(Boolean).join(', ')
+            : form.swerveMotors.join(', '),
           traversal: form.traversal.join(', '),
           collection: form.collection.join(', '),
           intakeType: form.intakeType === 'Other' ? form.intakeOther : form.intakeType,
@@ -223,15 +227,18 @@ export default function PitScoutingForm() {
             />
           </Field>
 
-          {form.driveTrain === 'Swerve' && (
-            <Field label="Swerve Motors">
-              <Toggle
-                options={['Vortex', 'Neo', 'Kraken', 'Other']}
-                value={form.swerveMotors}
-                onChange={setVal('swerveMotors')}
-              />
-            </Field>
-          )}
+          <Field label="Swerve Motors" hint="select all that apply">
+            <MultiToggle
+              options={['Vortex', 'Neo', 'Kraken', 'Other']}
+              value={form.swerveMotors}
+              onChange={setVal('swerveMotors')}
+            />
+            {form.swerveMotors.includes('Other') && (
+              <div style={{ marginTop: 8 }}>
+                <Input placeholder="Describe swerve motor..." value={form.swerveMotorsOther} onChange={set('swerveMotorsOther')} />
+              </div>
+            )}
+          </Field>
         </Card>
 
         {/* Capabilities */}
