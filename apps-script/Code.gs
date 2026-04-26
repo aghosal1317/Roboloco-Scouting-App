@@ -12,22 +12,26 @@ function doPost(e) {
     if (pitSheet.getLastRow() === 0) {
       pitSheet.appendRow([
         "Timestamp", "Team #",
-        "Height (in)", "Weight (lbs)", "Dimensions (L x W)",
-        "Drive Train",
-        "Shooter", "Indexer",
-        "Hopper Capacity", "Cycles",
-        "Over Bump?", "Under Trench?"
+        "Weight (lbs)", "Drive Train", "Swerve Motors",
+        "Hopper Capacity", "Can Traverse", "Can Collect From",
+        "Drive Team Experience (seasons)", "Bulldozing Notes",
+        "Intake Type", "Shooter Style", "Shoot Mode", "Shooting Positions",
+        "Climb Level", "Climb Timing",
+        "Has Auto / Works?", "Auto Paths", "Auto Align (Tele-Op)?",
+        "Other Notes"
       ]);
     }
 
     pitSheet.appendRow([
       timestamp,
       data.teamNumber,
-      data.height, data.weight, data.dimensions,
-      data.driveTrain,
-      data.shooter, data.indexer,
-      data.hopperCapacity, data.cycles,
-      data.overBump, data.underTrench
+      data.weight, data.driveTrain, data.swerveMotors,
+      data.hopperCapacity, data.traversal, data.collection,
+      data.driveTeamExp, data.bulldozing,
+      data.intakeType, data.shooterStyle, data.shootMode, data.shootingPositions,
+      data.climb, data.climbTiming,
+      data.hasAuto, data.autoPaths, data.autoAlign,
+      data.otherNotes
     ]);
 
   } else {
